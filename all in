@@ -448,3 +448,293 @@ int main() {
     }
     return 0;
 }
+
+9) Quicksort.c
+
+#include <stdio.h>
+#include <stdlib.h>
+#define SIZE 1000
+int count = 0;
+
+int partition(int a[SIZE], int l, int r)
+{
+    int pivot = a[l];
+    int i = l + 1, j = r, temp;
+    while (1)
+    {
+        while (pivot >= a[i] && i <= r)
+        {
+            i++;
+            count++;
+        }
+        while (pivot < a[j] && j != l)
+        {
+            j--;
+            count++;
+        }
+        if (i < j)
+        {
+            temp = a[i];
+            a[i] = a[j];
+            a[j] = temp;
+        }
+        else
+        {
+            temp = a[j];
+            a[j] = a[l];
+            a[l] = temp;
+            return j;
+        }
+    }
+}
+
+void quickSort(int a[SIZE], int l, int r)
+{
+    if (l < r)
+    {
+        int s = partition(a, l, r);
+        quickSort(a, l, s - 1);
+        quickSort(a, s + 1, r);
+    }
+}
+
+int main()
+{
+    int a[SIZE], x[SIZE], y[SIZE], z[SIZE];
+    int n, i, j, c1, c2, c3;
+    printf("\nEnter the size of the array :");
+    scanf("%d", &n);
+    printf("\nRead the elements: ");
+    for (i = 0; i < n; i++)
+    {
+        scanf("%d", &a[i]);
+    }
+    quickSort(a, 0, n - 1);
+    printf("\nSorted array : ");
+    for (i = 0; i < n; i++)
+    {
+        printf("%d\t", a[i]);
+    }
+    printf("\n");
+    printf("\nCount = %d\n", count);
+    printf("\nSize\tASC\tDESC\tRAND\n");
+    for (i = 16; i < SIZE; i *= 2)
+    {
+        for (j = 0; j < i; j++)
+        {
+            x[j] = j;
+            y[j] = i - j - 1;
+            z[j] = rand() % i;
+        }
+        count = 0;
+        quickSort(x, 0, i - 1);
+        c1 = count;
+        count = 0;
+        quickSort(y, 0, i - 1);
+        c2 = count;
+        count = 0;
+        quickSort(z, 0, i - 1);
+        c3 = count;
+        printf("%d\t%d\t%d\t%d\n", i, c1, c2, c3);
+    }
+    return 0;
+}
+
+10) heapsort and its time complexity
+.. to find out
+
+
+11) flyods algo
+
+#include <stdio.h>
+#include <stdlib.h>
+#define INF 9999
+
+int min(int a, int b)
+{
+    return (a < b) ? a : b;
+}
+void floyd(int **graph, int n)
+{
+    int i, j, k;
+
+    for (k = 0; k < n; k++)
+    {
+        for (i = 0; i < n; i++)
+        {
+            for (j = 0; j < n; j++)
+            {
+
+                graph[i][j] = min(graph[i][j], graph[i][k] + graph[k][j]);
+            }
+        }
+    }
+}
+
+int main()
+{
+    int n, i, j;
+
+    printf("Enter the number of vertices: ");
+    scanf("%d", &n);
+
+    int **graph = (int **)malloc(n * sizeof(int *));
+    for (i = 0; i < n; i++)
+    {
+        graph[i] = (int *)malloc(n * sizeof(int));
+    }
+
+    printf("Enter the adjacency matrix:\n");
+    for (i = 0; i < n; i++)
+    {
+        for (j = 0; j < n; j++)
+        {
+            scanf("%d", &graph[i][j]);
+            if (i != j && graph[i][j] == -1)
+                graph[i][j] = INF;
+        }
+    }
+
+    floyd(graph, n);
+
+    printf("Shortest distances between every pair of vertices:\n");
+    for (i = 0; i < n; i++)
+    {
+        for (j = 0; j < n; j++)
+        {
+            if (graph[i][j] == INF)
+                printf("INF\t");
+            else
+                printf("%d\t", graph[i][j]);
+        }
+        printf("\n");
+    }
+
+    for (i = 0; i < n; i++)
+    {
+        free(graph[i]);
+    }
+    free(graph);
+
+    return 0;
+}
+10) connectivity using dfs
+
+#include <stdio.h>
+#include <stdlib.h>
+
+void bfs(int a[][10], int n, int v[10], int source)
+{
+    int i, q[10], f = 0, r = -1, node;
+    v[source] = 1;
+    q[++r] = source;
+    while (f <= r)
+    {
+        node = q[f++];
+        for (i = 1; i <= n; i++)
+        {
+            if (!v[i] && (a[node][i] == 1))
+            {
+                q[++r] = i;
+                v[i] = 1;
+            }
+        }
+    }
+}
+
+int main()
+{
+    int n, a[10][10], i, v[10] = {}, j, count = 0;
+    printf("\nEnter the number of nodes : ");
+    scanf("%d", &n);
+    for (i = 1; i <= n; i++)
+        for (j = 1; j <= n; j++)
+            scanf("%d", &a[i][j]);
+
+    // the printing of the graph is optional
+    printf("\nThe grpah is as follows :\n");
+    for (i = 1; i <= n; i++)
+    {
+        for (j = 1; j <= n; j++)
+            printf("%d ", a[i][j]);
+        printf("\n"); 
+    }
+
+    for (i = 1; i <= n; i++)
+    {
+        if (!v[i])
+        {
+            bfs(a, n, v, i);
+            count++;
+        }
+    }
+    if (count == 1)
+        printf("\nThe graph is connected\n");
+    else
+        printf("\nThe graph is not connected and has %d componenets\n", count);
+    return 0;
+}
+
+12) Minimum cost spanning tree / prim's 
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define INF 999
+
+void prims(int n, int cost[10][10])
+{
+    int i, j, min, u, v, visited[10], mincost = 0, e = 1;
+    for (i = 1; i <= n; i++)
+    {
+        visited[i] = 0;
+    }
+    visited[1] = 1;
+    while (e < n)
+    {
+        min = INF;
+        for (i = 1; i <= n; i++)
+        {
+            if (visited[i])
+            {
+                for (j = 1; j <= n; j++)
+                {
+                    if (!visited[j] && cost[i][j] < min)
+                    {
+                        min = cost[i][j];
+                        u = i;
+                        v = j;
+                    }
+                }
+            }
+        }
+        if (!visited[v])
+        {
+            printf("\n Edge %d: (%d %d) cost: %d", e++, u, v, min);
+            mincost += min;
+            visited[v] = 1;
+        }
+        cost[u][v] = cost[v][u] = INF;
+    }
+    printf("\n Total cost = %d", mincost);
+}
+
+int main()
+{
+    int n, i, j, cost[10][10];
+    printf("\n Enter the number of nodes: ");
+    scanf("%d", &n);
+    printf("\n Enter the adjacency matrix:\n");
+    for (i = 1; i <= n; i++)
+    {
+        printf("\n Enter the elements of row %d\n", i);
+        for (j = 1; j <= n; j++)
+        {
+            scanf("%d", &cost[i][j]);
+            if (cost[i][j] == 0)
+                cost[i][j] = INF;
+        }
+    }
+    prims(n, cost);
+    return 0;
+}
